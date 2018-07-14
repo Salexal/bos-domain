@@ -1,0 +1,64 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+group = 'wzvtcsoft.embracex'
+version = '0.82'
+
+description = """"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+    mavenCentral()
+
+}
+dependencies {
+    compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version:'1.0.2.Final'
+    compile group: 'org.hibernate', name: 'hibernate-core', version:'5.3.2.Final'
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version:'2.0.8.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version:'2.0.8.RELEASE'
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId 'bos-domain'
+            version project.version
+            artifact sourcesJar
+        }
+    }
+    repositories {
+        maven {
+            //url  "http://dl.bintray.com/andimarek/graphql-java"
+            //TODO 添加snapshot repo
+            url = "https://repo.rdc.aliyun.com/repository/26140-release-CLWeLx/"
+            credentials {
+                username "$yunxiaomvnrepoUser"
+                password "$yunxiaomvnrepoPassword"
+            }
+        }
+    }
+}
+
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
